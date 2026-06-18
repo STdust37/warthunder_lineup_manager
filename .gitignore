@@ -1,0 +1,28 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local database artifacts
+*.duckdb
+*.duckdb.wal
+*.duckdb.tmp
+
+# Word lock/temp files
+*.doc
+*.docx
+*.hwp
+*.hwpx
+*.pdf
+~$*.docx
+~$*.doc
+
+# Course/report-only artifacts
+build_final_report.py
+apply_report_template_style.py
+final_report_changes.md
+war_thunder_design_draft.md
+smoke_test.py
+
+# Local render scratch folders
+report_render/
+tmp_render/

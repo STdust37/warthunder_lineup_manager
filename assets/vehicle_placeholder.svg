@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Tank placeholder image">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#17212b"/>
+      <stop offset="1" stop-color="#0b1118"/>
+    </linearGradient>
+    <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6f7f76"/>
+      <stop offset="1" stop-color="#38443f"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#sky)"/>
+  <rect y="255" width="640" height="105" fill="#151b1b"/>
+  <path d="M0 285 C120 245 230 275 330 248 C435 220 505 245 640 205 L640 360 L0 360 Z" fill="#1f2a25"/>
+  <g opacity="0.18" fill="none" stroke="#67e8f9" stroke-width="2">
+    <path d="M80 70 H560"/>
+    <path d="M120 100 H520"/>
+    <path d="M180 130 H450"/>
+  </g>
+  <g transform="translate(110 132)">
+    <path d="M110 95 H380 C410 95 432 118 432 147 C432 176 410 199 380 199 H105 C75 199 53 176 53 147 C53 118 80 95 110 95 Z" fill="#1b2524" stroke="#93a39a" stroke-width="7"/>
+    <path d="M147 64 H293 C326 64 354 82 365 110 H115 C124 82 132 64 147 64 Z" fill="url(#steel)" stroke="#b5c2b8" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M336 84 L515 57 C529 55 539 64 541 75 C543 86 535 96 521 98 L361 121 Z" fill="#516159" stroke="#b5c2b8" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M92 110 H395 C417 110 433 128 433 149 C433 170 417 184 395 184 H92 C70 184 55 168 55 147 C55 126 70 110 92 110 Z" fill="#2f3b36"/>
+    <g fill="#0c1114" stroke="#748179" stroke-width="6">
+      <circle cx="108" cy="148" r="25"/>
+      <circle cx="169" cy="148" r="25"/>
+      <circle cx="230" cy="148" r="25"/>
+      <circle cx="291" cy="148" r="25"/>
+      <circle cx="352" cy="148" r="25"/>
+    </g>
+    <path d="M112 148 H354" fill="none" stroke="#9aa79f" stroke-width="8" stroke-linecap="round" opacity="0.45"/>
+    <path d="M153 71 L125 108 H362 C349 90 329 77 293 71 Z" fill="#849188" opacity="0.28"/>
+  </g>
+  <text x="320" y="318" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="22" text-anchor="middle" opacity="0.78">War Thunder Tank Image</text>
+</svg>
