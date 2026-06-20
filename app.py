@@ -142,6 +142,8 @@ class WarThunderApp:
         nations = self.service.list_nations()
         types = self.service.list_vehicle_types()
 
+        # Search filters are passed to VehicleRepository.find_by_filter(),
+        # where optional values are converted into SQL WHERE clauses.
         nation_dd = ft.Dropdown(label="국가", width=180, options=self._nation_options(nations, "전체"))
         type_dd = ft.Dropdown(label="병과", width=180, options=self._options(types, "type_id", "name", "전체"))
         keyword_tf = ft.TextField(label="장비명 검색", width=220)
@@ -164,6 +166,8 @@ class WarThunderApp:
         table_box = ft.Container(expand=True)
 
         def render_detail(vehicle_id: int | None) -> None:
+            # Detail lookup uses LEFT JOIN fields so image, armor, and shell
+            # information can be shown even if part of the optional data is empty.
             if not vehicle_id:
                 detail_box.content = ft.Text("장비를 선택하면 상세 정보가 표시됩니다.")
                 return
@@ -243,6 +247,8 @@ class WarThunderApp:
         nations = self.service.list_nations()
         types = self.service.list_vehicle_types()
 
+        # One registration form writes one vehicle row plus its armor spec
+        # and representative shell row through WarThunderService.create_vehicle().
         name = ft.TextField(label="장비명", width=260)
         nation = ft.Dropdown(label="국가", width=220, options=self._nation_options(nations))
         vehicle_type = ft.Dropdown(label="병과", width=220, options=self._options(types, "type_id", "name"))
@@ -338,6 +344,8 @@ class WarThunderApp:
             self.selected_lineup_slot_no = None
             self.selected_lineup_vehicle_id = None
 
+        # The app uses the highest BR in the lineup as the matching BR.
+        # This value is shown in the lineup list and reused by analysis.
         def change_nation(e: ft.ControlEvent) -> None:
             self.lineup_nation_id = self._int_or_none(e.control.value)
             self.selected_lineup_id = None
@@ -405,6 +413,8 @@ class WarThunderApp:
 
         def add_vehicle_to_slot(vehicle_id: int) -> None:
             try:
+                # Slot assignment is treated as replacement: the service
+                # removes the previous slot row before inserting the new one.
                 if not self.selected_lineup_id:
                     raise ValueError("라인업을 선택해야 합니다.")
                 if not self.selected_lineup_slot_no:
@@ -591,6 +601,8 @@ class WarThunderApp:
         )
 
         def render_result() -> None:
+            # The left panel shows aggregate lineup statistics; the right
+            # panel compares one selected tank against the matching-BR group.
             if not self.analysis_lineup_id:
                 lineup_panel.content = ft.Column(
                     [
@@ -876,6 +888,8 @@ class WarThunderApp:
         if df.empty:
             return ft.Text("성능 비교 결과가 없습니다.")
         first = df.iloc[0]
+        # Analysis rows are split by metric type so penetration and armor
+        # can be presented as separate tables in the report screenshots.
         header = ft.Text(
             f"{first['vehicle_name']} (BR {first['vehicle_br']}) / 비교 BR {first['comparison_br_min']:.1f} ~ {first['comparison_br_max']:.1f} / 비교군 {int(first['comparison_count'])}대",
             weight=ft.FontWeight.BOLD,
@@ -1309,12 +1323,16 @@ class WarThunderApp:
         return options
 
     def _show_message(self, message: str, error: bool = False) -> None:
-        self.page.snack_bar = ft.SnackBar(
-            ft.Text(message),
+        # Persistent SnackBar is used so success/failure messages remain
+        # visible long enough to capture for the implementation report.
+        snack_bar = ft.SnackBar(
+            ft.Text(message, color=ft.Colors.WHITE),
+            behavior=ft.SnackBarBehavior.FLOATING,
             bgcolor=ft.Colors.RED_700 if error else ft.Colors.GREEN_700,
+            show_close_icon=True,
+            persist=True,
         )
-        self.page.snack_bar.open = True
-        self.page.update()
+        self.page.show_dialog(snack_bar)
 
     def _status_color(self, status: str) -> str:
         return {

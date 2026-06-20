@@ -63,6 +63,8 @@ class AppService:
         armor_data: dict[str, int],
         shell_data: dict[str, Any],
     ) -> int:
+        # A single UI registration is normalized into three tables:
+        # vehicle, tank_spec, and shell.
         if self.vehicles.exists_by_nation_and_name(vehicle_data["nation_id"], vehicle_data["name"]):
             raise ValueError("같은 국가에 동일한 장비명이 이미 존재합니다.")
         vehicle_id = self.vehicles.save(vehicle_data)
@@ -117,6 +119,8 @@ class AppService:
         vehicle_id: int,
         slot_no: int,
     ) -> None:
+        # Keep lineup data consistent at the service layer before writing
+        # the relationship table: same nation, valid slot, no duplicate tank.
         lineup_df = self.lineups.find_by_id(lineup_id)
         vehicle_df = self.vehicles.find_by_id(vehicle_id)
         if lineup_df.empty:
@@ -135,6 +139,8 @@ class AppService:
         if existing_vehicle_id != vehicle_id and self.lineup_vehicles.exists_by_lineup_and_vehicle(lineup_id, vehicle_id):
             raise ValueError("선택한 장비는 이미 이 라인업의 다른 슬롯에 배치되어 있습니다.")
         if existing_vehicle_id is not None:
+            # Replacing a slot is implemented as delete then insert so the
+            # composite key (lineup_id, vehicle_id) remains simple.
             self.lineup_vehicles.delete_by_lineup_and_slot(lineup_id, slot_no)
         self.lineup_vehicles.save(lineup_id, vehicle_id, slot_no, "")
 
@@ -155,6 +161,8 @@ class AppService:
         if raw.empty:
             return raw
 
+        # Convert one aggregate SQL result into UI rows: one row for
+        # penetration and one row for each armor direction.
         row = raw.iloc[0].to_dict()
         metrics = [
             ("관통력", "penetration_500m_0deg", "avg_penetration", "mm"),

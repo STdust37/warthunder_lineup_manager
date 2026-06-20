@@ -130,6 +130,8 @@ class VehicleRepository(BaseRepository):
         br_max: float | None = None,
         keyword: str | None = None,
     ) -> pd.DataFrame:
+        # Build the WHERE clause only from filters selected in the Flet UI.
+        # Parameter binding keeps the query safe while allowing flexible search.
         clauses: list[str] = []
         params: list[Any] = []
         if nation_id:
@@ -418,17 +420,23 @@ class LineupQueryRepository(BaseRepository):
         with connect(self.db_path) as conn:
             return conn.execute(
                 """
+                -- lineup_br calculates War Thunder matching BR from the
+                -- highest BR vehicle in the selected lineup.
                 WITH lineup_br AS (
                     SELECT MAX(v.battle_rating) AS max_br
                     FROM lineup_vehicle lv
                     JOIN vehicle v ON lv.vehicle_id = v.vehicle_id
                     WHERE lv.lineup_id = ?
                 ),
+                -- Only representative shells are used for penetration
+                -- comparison because one tank can have multiple shells.
                 representative_shell AS (
                     SELECT vehicle_id, name AS shell_name, shell_type, penetration_500m_0deg
                     FROM shell
                     WHERE is_representative = TRUE
                 ),
+                -- Compare against tanks in the actual matchmaking range:
+                -- matching BR - 1.0 through matching BR + 1.0.
                 comparison_avg AS (
                     SELECT
                         COUNT(*) AS comparison_count,
